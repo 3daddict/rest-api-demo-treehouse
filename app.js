@@ -69,7 +69,7 @@ app.put('/quotes/:id', async (req, res) => {
 })
 
 //Send a DELETE request to /quotes/:id Delete a quote
-app.delete('/quotes/:id', async (req, res) => {
+app.delete('/quotes/:id', async (req, res, next) => {
     try {
         const quote = await records.getQuote(req.params.id);
         if (quote) {
@@ -79,10 +79,30 @@ app.delete('/quotes/:id', async (req, res) => {
             res.status(404).json({ message: "Quote not found..." })
         }
     } catch (err) {
-        res.status(500).json({ message: err.message });
+        next(err);
     }
 })
 
 //Send a GET request to /quotes/quote/random to READ (view) a random quote
+
+
+//Error Middleware
+app.use((req, res, next) => {
+    const err =  new Error("Not Found");
+    err.status = 404;
+    next(err);
+});
+
+//Error Handler 
+app.use((err, req, res, next) => {
+    res.status(err.status || 500);
+    res.json({
+        error: {
+            message: err.message
+        }
+    })
+})
+
+
 
 app.listen(3000, () => console.log("Quote API listening on port 3000!"));
