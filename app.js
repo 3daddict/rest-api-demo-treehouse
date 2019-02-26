@@ -69,6 +69,19 @@ app.put('/quotes/:id', async (req, res) => {
 })
 
 //Send a DELETE request to /quotes/:id Delete a quote
+app.delete('/quotes/:id', async (req, res) => {
+    try {
+        const quote = await records.getQuote(req.params.id);
+        if (quote) {
+        await records.deleteQuote(quote);
+        res.status(204).end();
+        } else {
+            res.status(404).json({ message: "Quote not found..." })
+        }
+    } catch (err) {
+        res.status(500).json({ message: err.message });
+    }
+})
 
 //Send a GET request to /quotes/quote/random to READ (view) a random quote
 
