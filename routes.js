@@ -14,20 +14,26 @@ function asyncHandler(cb) {
 }
 
 //Send a GET request to /quotes READ a list of quotes
-router.get("/quotes", asyncHandler(async(req, res) => {
+router.get("/quotes", asyncHandler(async (req, res) => {
     //create a variable that reads all quotes from database
     const quotes = await records.getQuotes();
     res.json(quotes);
 }));
 
 //Send a GET request to /quotes/:id to READ (view) a quote
-router.get("/quotes/:id", asyncHandler(async(req, res) => {
+router.get("/quotes/:id", asyncHandler(async (req, res) => {
     const quote = await records.getQuote(req.params.id);
     if(quote) {
         res.json(quote);
     } else {
         res.status(404).json({ message: err.message });
     }
+}));
+
+//Send a GET request to /quotes/quote/random to READ (view) a random quote
+router.get('/quotes/quote/random', asyncHandler(async (req, res, next) => {
+    const quote = await records.getRandomQuote();
+    res.json(quote);
 }));
 
 //Send a POST request to /quotes CREATE a new quote
@@ -70,7 +76,7 @@ router.delete('/quotes/:id', asyncHandler(async(req, res, next) => {
     }
 }));
 
-//Send a GET request to /quotes/quote/random to READ (view) a random quote
+
 
 
 module.exports = router;
